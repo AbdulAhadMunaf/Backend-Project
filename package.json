@@ -5,8 +5,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start" : "node \"d:\\Backend Project\\src\\index.js\"",
-    "dev" : "nodemon \"d:\\Backend Project\\src\\index.js\\"
+    "start": "node \"d:\\Backend Project\\src\\index.js\"",
+    "dev": "nodemon \"d:\\Backend Project\\src\\index.js\\"
   },
   "keywords": [
     "javascript",
@@ -15,6 +15,7 @@
   "author": "abdul_ahad4",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^3.1.3"
+    "nodemon": "^3.1.3",
+    "prettier": "^3.3.2"
   }
 }
