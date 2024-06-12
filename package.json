@@ -1,0 +1,20 @@
+{
+  "name": "chai-backend",
+  "version": "1.0.0",
+  "description": "A backend app",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start" : "node \"d:\\Backend Project\\src\\index.js\"",
+    "dev" : "nodemon \"d:\\Backend Project\\src\\index.js\\"
+  },
+  "keywords": [
+    "javascript",
+    "backend"
+  ],
+  "author": "abdul_ahad4",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.3"
+  }
+}
