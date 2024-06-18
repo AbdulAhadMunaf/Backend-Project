@@ -4,6 +4,12 @@ import cookieParser from "cookie-parser";
 
 const app = express();
 
+app.use((req, res, next) => {
+    res.setTimeout(120000, () => { // 2 minutes timeout
+        res.status(408).send('Request timed out');
+    });
+    next();
+});
 app.use(cors({
     origin: process.env.CORS_ORIGIN,
     credentials: true
@@ -24,7 +30,7 @@ import userRouter from "./routes/user.routes.js";
 
 // routes declaration
 
-app.use("/api/v1/users",userRouter)
+app.use("/api/v1/users", userRouter)
 
 
 
