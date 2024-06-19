@@ -10,11 +10,11 @@ if (!fs.existsSync(tempDir)) {
 
 const storage = multer.diskStorage({
     destination: async function (req, file, cb) {
-        console.log(`Destination directory: ${tempDir}`);
+        // console.log(`Destination directory: ${tempDir}`);
         cb(null, tempDir);
     },
     filename: async function (req, file, cb) {
-        console.log(`Uploading file: ${file.originalname}`);
+        // console.log(`Uploading file: ${file.originalname}`);
         cb(null, file.originalname);
     }
 });
