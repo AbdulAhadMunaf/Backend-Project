@@ -1,9 +1,10 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { deleteFromCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
+
 
 const generateAccessAndRefreshToken = async (userId) => {
     try {
@@ -318,6 +319,8 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Error while loading uploading avatar");
     }
 
+    await deleteFromCloudinary(req.user?.avatar?.url);
+
     const user = await User.findByIdAndUpdate(
         req.user?._id,
         {
@@ -346,13 +349,17 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     const { coverImageLocalPath } = req.file?.path;
     if (!coverImageLocalPath) {
         throw new ApiError(400, "Cover Image file is missing");
-    }   
+    }
 
 
     const coverImage = await uploadOnCloudinary(coverImageLocalPath);
     if (!coverImage.url) {
         throw new ApiError(400, "Cover Image could not be uploaded on cloud");
     }
+
+
+    await deleteFromCloudinary(req.user?.coverImage?.url);
+
 
 
     const user = await User.findByIdAndUpdate(
