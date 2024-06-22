@@ -22,13 +22,25 @@ router.route("/register").post(
 router.route("/login").post(loginUser)
 
 // secure routes
-router.route("/logout").post(verifyJWT, logoutUser) 
+router.route("/logout").post(verifyJWT, logoutUser)
 router.route("/refresh-access-token").post(refreshAccessToken)
 router.route("/change-current-password").post(verifyJWT, changeCurrentPassword)
-router.route("/get-current-user").post(verifyJWT,getCurrentUser)
-router.route("/update-account-details").post(updateAccountDetails)
-router.route("/update-user-avatar").post(updateUserAvatar)
-router.route("/update-user-coverImage").post(updateUserCoverImage)
+router.route("/get-current-user").post(verifyJWT, getCurrentUser)
+router.route("/update-account-details").post(verifyJWT, updateAccountDetails)
+router.route("/update-user-avatar").post(
+    upload.fields([{
+        name: "avatar",
+        maxCount: 1
+    }]),
+    verifyJWT,
+    updateUserAvatar)
+router.route("/update-user-coverImage").post(
+    upload.fields([{
+        name: "coverImage",
+        maxCount: 1
+    }]),
+    verifyJWT,
+    updateUserCoverImage)
 
 
 export default router;

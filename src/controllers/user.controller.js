@@ -295,7 +295,7 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
         {
             new: true
         }
-    ).select("-password")
+    ).select("-password -refreshToken")
 
     return res
         .status(200)
@@ -310,7 +310,8 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 })
 
 const updateUserAvatar = asyncHandler(async (req, res) => {
-    const { avatarLocalPath } = req.file?.path;
+
+    const avatarLocalPath = req.files?.avatar[0]?.path;
 
     if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar file is missing");
@@ -322,7 +323,11 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Error while loading uploading avatar");
     }
 
-    await deleteFromCloudinary(req.user?.avatar?.url);
+    const deleted = await deleteFromCloudinary(req.user?.avatar);
+
+    if (!deleted) {
+        throw new ApiError(500, "Failed to delete the previous Avatar Image");
+    }
 
     const user = await User.findByIdAndUpdate(
         req.user?._id,
@@ -349,27 +354,30 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 
 const updateUserCoverImage = asyncHandler(async (req, res) => {
 
-    const { coverImageLocalPath } = req.file?.path;
+    const coverImageLocalPath = req.files?.coverImage[0]?.path;
+
     if (!coverImageLocalPath) {
         throw new ApiError(400, "Cover Image file is missing");
     }
 
-
     const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+
     if (!coverImage.url) {
-        throw new ApiError(400, "Cover Image could not be uploaded on cloud");
+        throw new ApiError(400, "Error while loading uploading Cover Image");
     }
 
+    if (req.user.coverImage) {
+        const deleted = await deleteFromCloudinary(req.user?.coverImage);
 
-    await deleteFromCloudinary(req.user?.coverImage?.url);
-
-
+        if (!deleted) {
+            throw new ApiError(500, "Failed to delete the previous Cover Image");
+        }
+    }
 
     const user = await User.findByIdAndUpdate(
         req.user?._id,
         {
-            $set:
-            {
+            $set: {
                 coverImage: coverImage.url
             }
         },
@@ -382,11 +390,14 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
             new ApiResponse(
                 200,
                 user,
-                "Cover Image updated"
+                "Cover image updated"
             )
         )
 
 })
+
+
+
 
 export {
     registerUser,
